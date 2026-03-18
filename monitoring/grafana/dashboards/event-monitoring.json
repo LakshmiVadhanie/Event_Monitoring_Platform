@@ -1,0 +1,31 @@
+{
+  "title": "Event Monitoring Platform",
+  "uid": "event-monitoring",
+  "version": 1,
+  "schemaVersion": 36,
+  "refresh": "30s",
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "HTTP Requests Total", "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "targets": [{"expr": "sum(http_requests_total)", "refId": "A"}],
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "value", "graphMode": "area"}
+    },
+    {
+      "id": 2, "type": "stat", "title": "Active Events", "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "targets": [{"expr": "active_events_total", "refId": "A"}],
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "value", "graphMode": "area"}
+    },
+    {
+      "id": 3, "type": "stat", "title": "Error Rate", "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+      "targets": [{"expr": "rate(http_requests_total{status_code=~\"5..\"}[5m])", "refId": "A"}]
+    },
+    {
+      "id": 4, "type": "timeseries", "title": "Request Rate", "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+      "targets": [{"expr": "rate(http_requests_total[1m])", "refId": "A", "legendFormat": "{{route}}"}]
+    },
+    {
+      "id": 5, "type": "timeseries", "title": "Event Resolution Time (hours)", "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "targets": [{"expr": "histogram_quantile(0.95, rate(event_resolution_duration_hours_bucket[5m]))", "refId": "A", "legendFormat": "P95"}]
+    }
+  ]
+}
